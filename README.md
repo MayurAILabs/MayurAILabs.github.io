@@ -8,9 +8,9 @@ Landing page for [mayurailabs.github.io](https://mayurailabs.github.io) — a pe
 
 | App | Description | Live URL | Repo |
 |---|---|---|---|
-| 💰 Daily Savings Calculator | Visualizes how small daily savings compound over time (₹/lakhs/crores, Chart.js) | [Open](https://mayurailabs.github.io/mayur-ai-labs-savings-calculator/) | [mayur-ai-labs-savings-calculator](https://github.com/MayurAILabs/mayur-ai-labs-savings-calculator) |
-| 📊 Expense Manager | Tracks daily spending by category to show where money goes each month | [Open](https://mayurailabs.github.io/expense-tracker/) | [expense-tracker](https://github.com/MayurAILabs/expense-tracker) |
-| ✅ Priority Manager | Priority-based task tracker with sign-in and role-based access | [Open](https://mayurailabs.github.io/PriorityManager/) | [PriorityManager](https://github.com/MayurAILabs/PriorityManager) |
+| 💰 Daily Savings Calculator | Visualizes how small daily savings compound over time (₹/lakhs/crores, Chart.js) | [Open](https://mayurailabs.co.in/daily-savings-calculator/) | [mayur-ai-labs-savings-calculator](https://github.com/MayurAILabs/mayur-ai-labs-savings-calculator) |
+| 📊 Expense Manager | Tracks daily spending by category to show where money goes each month | [Open](https://mayurailabs.co.in/expense-tracker/) | [expense-tracker](https://github.com/MayurAILabs/expense-tracker) |
+| ✅ Priority Manager | Priority-based task tracker with sign-in and role-based access | [Open](https://mayurailabs.co.in/priority-manager/) | [PriorityManager](https://github.com/MayurAILabs/PriorityManager) |
 
 ## Structure
 
