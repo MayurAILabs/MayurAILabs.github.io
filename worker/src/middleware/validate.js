@@ -24,14 +24,14 @@ export function validateChatRequest(body, config) {
       return { ok: false, error: `\`history\` exceeds the maximum of ${config.maxHistoryEntries} entries.` };
     }
     for (const entry of history) {
-      if (
-        !entry ||
-        typeof entry !== "object" ||
-        !VALID_ROLES.has(entry.role) ||
-        typeof entry.content !== "string" ||
-        entry.content.length > config.maxMessageLength
-      ) {
+      if (!entry || typeof entry !== "object" || !VALID_ROLES.has(entry.role) || typeof entry.content !== "string") {
         return { ok: false, error: "Each `history` entry must be { role: 'user'|'assistant', content: string }." };
+      }
+      if (entry.content.length > config.maxHistoryEntryLength) {
+        return {
+          ok: false,
+          error: `A \`history\` entry exceeds the maximum length of ${config.maxHistoryEntryLength} characters.`,
+        };
       }
     }
   }

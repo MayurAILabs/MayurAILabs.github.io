@@ -9,10 +9,16 @@ export const assistantConfig = {
   // How many prior turns (user+assistant pairs) to forward as context.
   historyLimit: 10,
 
-  // Per-request input limits.
+  // Per-request input limits. maxMessageLength bounds the live message the
+  // user is typing right now. maxHistoryEntryLength bounds each *stored*
+  // turn sent back as context — this must stay well above maxMessageLength,
+  // since past assistant replies (up to maxOutputTokens) are routinely
+  // longer than a typed message. maxBodyBytes is sized to comfortably fit
+  // a full maxHistoryEntries-turn conversation at these per-entry limits.
   maxMessageLength: 4000,
+  maxHistoryEntryLength: 12_000,
   maxHistoryEntries: 20,
-  maxBodyBytes: 32_000,
+  maxBodyBytes: 150_000,
 
   // Origins allowed to call this API.
   allowedOrigins: [
