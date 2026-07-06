@@ -36,6 +36,7 @@ export async function handleChat(request, env, config) {
       const answer = await getChatAnswer({ env, config, message: validated.message, history: validated.history });
       return jsonResponse({ answer }, 200, cors);
     } catch (err) {
+      console.error("handleChat: getChatAnswer failed:", err instanceof Error ? err.message : err);
       return jsonResponse({ error: "The assistant is temporarily unavailable. Please try again." }, 502, cors);
     }
   }

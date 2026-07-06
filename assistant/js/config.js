@@ -8,10 +8,15 @@ export const assistantConfig = {
   welcomeMessage:
     "Hi! I'm the Mayur AI Labs assistant. Ask me anything about the tools on this site, or any question you'd like help with.",
 
-  // Same-origin relative path. Cloudflare routes mayurailabs.co.in/api/*
-  // directly to the dedicated ai-assistant-api Worker (more specific than
-  // the existing catch-all proxy route), so no absolute URL is needed here.
-  apiEndpoint: "/api/chat",
+  // Absolute URL, not a same-origin relative path: this repo's index.html is
+  // also reachable at the raw mayurailabs.github.io Pages domain (GitHub
+  // always leaves that live even with a custom domain configured), and that
+  // domain isn't fronted by the Cloudflare Worker route below. A relative
+  // "/api/chat" would silently hit GitHub's static file server there
+  // (405 Method Not Allowed) instead of the Worker. The Worker's CORS
+  // allowlist (worker/src/config/assistant.config.js) already permits both
+  // mayurailabs.co.in and mayurailabs.github.io as callers.
+  apiEndpoint: "https://mayurailabs.co.in/api/chat",
 
   maxMessageLength: 4000,
   historyLimit: 10, // turns (user+assistant pairs) kept in sessionStorage and sent as context

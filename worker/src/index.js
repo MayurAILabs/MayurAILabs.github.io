@@ -13,6 +13,7 @@ export default {
       try {
         return await handleChat(request, env, assistantConfig);
       } catch (err) {
+        console.error("fetch: unhandled error:", err instanceof Error ? err.message : err);
         return new Response(JSON.stringify({ error: "Internal server error." }), {
           status: 500,
           headers: { "content-type": "application/json", ...corsHeaders(request, assistantConfig) },

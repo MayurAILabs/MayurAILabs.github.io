@@ -32,6 +32,7 @@ export function streamChatResponse({ env, config, message, history }) {
         }
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`));
       } catch (err) {
+        console.error("streamChatResponse: provider call failed:", err instanceof Error ? err.message : err);
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify({ error: "The assistant is temporarily unavailable. Please try again." })}\n\n`)
         );
