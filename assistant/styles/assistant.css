@@ -1,0 +1,374 @@
+/* AI assistant widget — reuses the site's existing CSS variables
+   (--navy-*, --emerald*, --text-*, --border) defined in index.html's :root. */
+
+.assistant-widget-root {
+  position: fixed;
+  inset: auto 20px 20px auto;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.assistant-toggle-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--emerald), var(--emerald-bright));
+  color: var(--navy-950);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px -8px rgba(16, 185, 129, 0.55);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.assistant-toggle-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 16px 32px -8px rgba(16, 185, 129, 0.65);
+}
+
+.assistant-toggle-btn:focus-visible {
+  outline: 2px solid var(--emerald-bright);
+  outline-offset: 3px;
+}
+
+.assistant-toggle-btn-hidden {
+  display: none;
+}
+
+.assistant-window {
+  position: fixed;
+  right: 20px;
+  bottom: 90px;
+  width: 380px;
+  max-width: calc(100vw - 40px);
+  height: 600px;
+  max-height: calc(100vh - 120px);
+  background: linear-gradient(180deg, var(--navy-800), var(--navy-900));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(16px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.assistant-window.assistant-window-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.assistant-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.assistant-header-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.assistant-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--emerald), var(--emerald-bright));
+  color: var(--navy-950);
+  font-weight: 800;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.assistant-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.assistant-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.assistant-online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--emerald-bright);
+  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+  animation: assistant-pulse 2s infinite;
+}
+
+@keyframes assistant-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
+  70% { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+.assistant-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.assistant-icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.assistant-icon-btn:hover {
+  background: var(--navy-700);
+  color: var(--text-primary);
+}
+
+.assistant-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.assistant-msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 88%;
+}
+
+.assistant-msg-user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.assistant-msg-assistant,
+.assistant-msg-system {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.assistant-msg-bubble {
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  word-wrap: break-word;
+}
+
+.assistant-msg-user .assistant-msg-bubble {
+  background: linear-gradient(135deg, var(--emerald), var(--emerald-bright));
+  color: var(--navy-950);
+  border-radius: 14px 14px 4px 14px;
+  font-weight: 500;
+}
+
+.assistant-msg-assistant .assistant-msg-bubble {
+  background: var(--navy-800);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 14px 14px 14px 4px;
+}
+
+.assistant-msg-system .assistant-msg-bubble {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-style: italic;
+  padding: 4px 8px;
+}
+
+.assistant-msg-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.assistant-msg-typing .assistant-msg-bubble {
+  background: var(--navy-800);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+}
+
+.assistant-typing-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.assistant-typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: assistant-bounce 1.2s infinite ease-in-out;
+}
+
+.assistant-typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+.assistant-typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes assistant-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Markdown content rendered inside .assistant-msg-content */
+.assistant-msg-content p { margin: 0 0 8px; }
+.assistant-msg-content p:last-child { margin-bottom: 0; }
+.assistant-msg-content h1,
+.assistant-msg-content h2,
+.assistant-msg-content h3 { margin: 12px 0 6px; font-size: 1.05em; }
+.assistant-msg-content ul,
+.assistant-msg-content ol { margin: 0 0 8px; padding-left: 20px; }
+.assistant-msg-content a { color: var(--emerald-bright); }
+.assistant-msg-content blockquote {
+  margin: 8px 0;
+  padding: 4px 12px;
+  border-left: 3px solid var(--emerald);
+  color: var(--text-muted);
+}
+.assistant-msg-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+  font-size: 0.92em;
+}
+.assistant-msg-content th,
+.assistant-msg-content td {
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: left;
+}
+.assistant-msg-content code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+}
+.assistant-msg-content pre.assistant-code-block {
+  position: relative;
+  background: var(--navy-950);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 32px 12px 12px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+.assistant-msg-content pre.assistant-code-block code {
+  background: none;
+  padding: 0;
+  font-size: 0.85em;
+}
+
+.assistant-copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--navy-800);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.assistant-copy-btn:hover {
+  color: var(--emerald-bright);
+  border-color: var(--emerald);
+}
+
+.assistant-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.assistant-textarea {
+  flex: 1;
+  resize: none;
+  background: var(--navy-700);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  font-family: inherit;
+  max-height: 120px;
+  line-height: 1.4;
+}
+
+.assistant-textarea:focus {
+  outline: none;
+  border-color: var(--emerald);
+}
+
+.assistant-send-btn {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--emerald), var(--emerald-bright));
+  color: var(--navy-950);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.assistant-send-btn:hover {
+  transform: scale(1.06);
+}
+
+@media (max-width: 480px) {
+  .assistant-window {
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .assistant-widget-root {
+    inset: auto 16px 16px auto;
+  }
+}

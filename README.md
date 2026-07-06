@@ -18,12 +18,22 @@ This repo (`MayurAILabs.github.io`) contains only the landing page (`index.html`
 
 ```
 MayurAILabs.github.io/
-└── index.html   ← landing page (this repo)
+├── index.html    ← landing page (this repo)
+├── assistant/    ← AI assistant widget (frontend, no build step)
+├── worker/       ← AI assistant's Cloudflare Worker backend (deployed separately via Wrangler)
+└── docs/         ← AI_ASSISTANT.md setup/deployment guide
 
 mayur-ai-labs-savings-calculator/   ← separate repo, own Pages deployment
 expense-tracker/                    ← separate repo, own Pages deployment
 PriorityManager/                    ← separate repo, own Pages deployment
 ```
+
+## AI assistant
+
+A floating AI assistant (Gemini 2.5 Flash) is embedded on the landing page,
+backed by a dedicated Cloudflare Worker (`worker/`) so the API key never
+reaches the browser. See [docs/AI_ASSISTANT.md](docs/AI_ASSISTANT.md) for
+architecture, setup, deployment, and troubleshooting.
 
 ## Adding a new app
 
