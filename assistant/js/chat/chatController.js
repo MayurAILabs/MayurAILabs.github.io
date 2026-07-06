@@ -17,6 +17,22 @@ export function createChatController({ messagesEl, config, onWelcomeReset }) {
     scrollToBottom();
   }
 
+  // Replays sessionStorage history back into the visible window on load, so
+  // what the user sees always matches the context the assistant actually has.
+  function renderRestoredHistory() {
+    for (const entry of history) {
+      const { element, contentEl } = createBubble(entry.role, entry.timestamp ? new Date(entry.timestamp) : undefined);
+      if (entry.role === "user") {
+        renderUserText(contentEl, entry.content);
+      } else {
+        renderAssistantMarkdown(contentEl, entry.content);
+      }
+      messagesEl.appendChild(element);
+    }
+    if (history.length) scrollToBottom();
+  }
+  renderRestoredHistory();
+
   async function sendUserMessage(rawText) {
     const text = rawText.trim();
     if (!text) return;
