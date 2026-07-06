@@ -1,0 +1,20 @@
+name = "ai-assistant-api"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+# Binds this worker to the /api/* path on the apex domain. Cloudflare matches
+# the most specific route first, so this does not affect the existing
+# catch-all proxy worker already serving mayurailabs.co.in/*.
+routes = [
+  { pattern = "mayurailabs.co.in/api/*", zone_name = "mayurailabs.co.in" }
+]
+
+# Per-IP fixed-window rate limiting (Workers Rate Limiting binding).
+# period must be 10 or 60 seconds. Adjust `limit` to taste.
+[[ratelimits]]
+name = "CHAT_RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }
+
+# Secrets (set via `wrangler secret put`, never stored here):
+#   GEMINI_API_KEY
