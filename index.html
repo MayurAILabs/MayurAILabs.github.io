@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mayur AI Labs</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --navy-950: #060b14;
@@ -42,17 +44,37 @@
   }
 
   .brand-mark {
-    width: 36px; height: 36px;
+    width: 38px; height: 38px;
     border-radius: 50%;
     display: block;
   }
 
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+  }
+
   .brand-name {
-    font-size: 15px;
-    letter-spacing: 0.14em;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .brand-name .accent { color: var(--emerald-bright); }
+
+  .brand-tagline {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-size: 9px;
+    letter-spacing: -0.03em;
     text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 600;
+    color: var(--emerald-bright);
+    opacity: 0.85;
+    font-weight: 500;
   }
 
   h1 {
@@ -183,8 +205,18 @@
 
   <header>
     <div class="brand">
-      <img class="brand-mark" src="favicon.svg" alt="Mayur AI Labs logo">
-      <span class="brand-name">Mayur AI Labs</span>
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mayur AI Labs logo">
+        <circle cx="16" cy="16" r="14" stroke="rgba(15,216,126,0.2)" stroke-width="1.5" fill="none"/>
+        <path d="M 5.5 11.7 A 14 14 0 0 1 26.5 11.7" stroke="#0FD87E" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <polyline points="5.6,26 5.6,8.5 16,17 26.4,8.5 26.4,26" stroke="#0FD87E" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+        <circle cx="5.6"  cy="8.5" r="2.5" fill="#0FD87E"/>
+        <circle cx="16"   cy="17"  r="2.5" fill="#0FD87E"/>
+        <circle cx="26.4" cy="8.5" r="2.5" fill="#0FD87E"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">Mayur<span class="accent">AI</span>Labs</span>
+        <span class="brand-tagline">AI for Curious Minds</span>
+      </div>
     </div>
     <h1>Small tools. <span>Built well.</span></h1>
     <p>A growing set of practical apps for everyday money and task decisions — pick one below to get started.</p>
