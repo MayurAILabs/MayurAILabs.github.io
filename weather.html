@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Forecast — Mayur AI Labs</title>
+<meta name="description" content="Free, live weather forecast — current conditions, hourly and 7-day outlook, powered by Open-Meteo.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="weather.css">
+</head>
+<body class="wx-body">
+
+  <a class="wx-back-link" href="index.html">&larr; Mayur AI Labs</a>
+
+  <main class="wx-page">
+
+    <header class="wx-header">
+      <h1 class="wx-title">Weather <span>Forecast</span></h1>
+      <p class="wx-subtitle">Live conditions, hourly and 7-day outlook — powered by Open-Meteo.</p>
+    </header>
+
+    <form class="wx-search-form" role="search" id="wx-search-form" autocomplete="off">
+      <label for="wx-city-input" class="wx-sr-only">Search for a city or Indian PIN code</label>
+      <input
+        type="text"
+        id="wx-city-input"
+        class="wx-city-input"
+        placeholder="Search city or PIN code, e.g. Pune or 411057"
+        aria-label="Search city or PIN code"
+        aria-autocomplete="list"
+        aria-controls="wx-suggestions"
+        aria-expanded="false"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      >
+      <button type="submit" class="wx-search-btn" aria-label="Search">Search</button>
+      <button type="button" class="wx-geo-btn" id="wx-geo-btn" aria-label="Use my current location">
+        <span aria-hidden="true">📍</span> Use My Location
+      </button>
+      <div id="wx-suggestions" class="wx-suggestions" role="listbox" aria-label="City suggestions" hidden></div>
+    </form>
+
+    <div id="wx-status" class="wx-status" role="status" aria-live="polite"></div>
+
+    <div id="wx-skeleton" class="wx-skeleton" aria-hidden="true">
+      <div class="wx-skel-block wx-skel-current"></div>
+      <div class="wx-skel-block wx-skel-hourly"></div>
+      <div class="wx-skel-block wx-skel-rain"></div>
+      <div class="wx-skel-block wx-skel-daily"></div>
+    </div>
+
+    <div id="wx-error" class="wx-error-card" role="alert" hidden>
+      <p class="wx-error-icon" aria-hidden="true">⚠️</p>
+      <p class="wx-error-text">Something went wrong while fetching the weather.</p>
+      <button type="button" class="wx-retry-btn" id="wx-retry-btn">Try Again</button>
+    </div>
+
+    <section class="wx-current-card" id="wx-current" aria-labelledby="wx-location-name" hidden>
+      <div class="wx-current-top">
+        <div>
+          <h2 class="wx-location-name" id="wx-location-name"></h2>
+          <p class="wx-updated" id="wx-updated"></p>
+        </div>
+        <div class="wx-current-icon" id="wx-current-icon" aria-hidden="true"></div>
+      </div>
+      <div class="wx-current-temp-row">
+        <span class="wx-current-temp" id="wx-current-temp"></span>
+        <span class="wx-current-condition" id="wx-current-condition"></span>
+      </div>
+      <dl class="wx-stats-grid" id="wx-stats-grid"></dl>
+    </section>
+
+    <section class="wx-hourly-section" id="wx-hourly-section" hidden aria-labelledby="wx-hourly-heading">
+      <h2 class="wx-section-heading" id="wx-hourly-heading">Next 24 Hours</h2>
+      <div class="wx-hourly-scroll" id="wx-hourly-scroll" role="list" tabindex="0" aria-label="Hourly forecast, scrollable"></div>
+    </section>
+
+    <section class="wx-rain-section" id="wx-rain-section" hidden aria-labelledby="wx-rain-heading">
+      <h2 class="wx-section-heading" id="wx-rain-heading">Rain Chance — Next 24 Hours</h2>
+      <div class="wx-rain-chart-wrap">
+        <div class="wx-rain-chart" id="wx-rain-chart" role="img" aria-label=""></div>
+      </div>
+    </section>
+
+    <section class="wx-daily-section" id="wx-daily-section" hidden aria-labelledby="wx-daily-heading">
+      <h2 class="wx-section-heading" id="wx-daily-heading">7-Day Forecast</h2>
+      <div class="wx-daily-list" id="wx-daily-list" role="list" aria-label="7-day forecast"></div>
+    </section>
+
+    <footer class="wx-footer">
+      <p>Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Indian PIN code data via <a href="https://github.com/dropdevrahul/pincodes-india" target="_blank" rel="noopener noreferrer">data.gov.in</a> — Mayur AI Labs</p>
+    </footer>
+
+  </main>
+
+  <script type="module" src="weather.js"></script>
+
+</body>
+</html>
