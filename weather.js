@@ -371,8 +371,15 @@ async function loadWeather(lat, lon, locationLabel) {
 
 let lastRequest = null;
 
-function loadWeatherWithRetry(lat, lon, locationLabel) {
+// Remembers the exact input text a search resolved to, so re-submitting the
+// same (already-resolved) text reuses the known coordinates instead of
+// re-geocoding a descriptive label like "Infotech Park (Hinjawadi) — 411057"
+// that was never meant to be searched again.
+let resolvedQuery = null;
+
+function loadWeatherWithRetry(lat, lon, locationLabel, queryText) {
   lastRequest = { lat, lon, locationLabel };
+  if (queryText !== undefined) resolvedQuery = { text: queryText, lat, lon, locationLabel };
   loadWeather(lat, lon, locationLabel);
 }
 
@@ -396,7 +403,7 @@ function renderSuggestions(results) {
       box.hidden = true;
       els['wx-city-input'].value = r.name;
       els['wx-city-input'].setAttribute('aria-expanded', 'false');
-      loadWeatherWithRetry(r.latitude, r.longitude, label);
+      loadWeatherWithRetry(r.latitude, r.longitude, label, r.name);
     });
     box.append(btn);
   });
@@ -421,6 +428,11 @@ async function handleSearchSubmit(e) {
   e.preventDefault();
   const query = els['wx-city-input'].value.trim();
   if (!query) return;
+  if (resolvedQuery && resolvedQuery.text === query) {
+    els['wx-suggestions'].hidden = true;
+    loadWeatherWithRetry(resolvedQuery.lat, resolvedQuery.lon, resolvedQuery.locationLabel, query);
+    return;
+  }
   try {
     setStatus('Searching…');
     const results = await searchLocation(query);
@@ -434,7 +446,7 @@ async function handleSearchSubmit(e) {
     els['wx-suggestions'].hidden = true;
     const top = results[0];
     const label = [top.name, top.country].filter(Boolean).join(', ');
-    loadWeatherWithRetry(top.latitude, top.longitude, label);
+    loadWeatherWithRetry(top.latitude, top.longitude, label, query);
   } catch {
     showError('City search failed. Please check your connection and try again.');
   }
