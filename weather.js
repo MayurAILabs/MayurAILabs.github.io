@@ -166,7 +166,7 @@ async function fetchWeather(lat, lon) {
     latitude: lat,
     longitude: lon,
     current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m',
-    hourly: 'temperature_2m,precipitation_probability,weather_code,uv_index',
+    hourly: 'temperature_2m,precipitation_probability,weather_code,uv_index,is_day',
     daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max',
     timezone: 'auto',
     forecast_days: '7',
@@ -291,6 +291,7 @@ function renderHourly(data) {
     temp: data.hourly.temperature_2m.slice(hourIdx, hourIdx + 24),
     rain: data.hourly.precipitation_probability.slice(hourIdx, hourIdx + 24),
     code: data.hourly.weather_code.slice(hourIdx, hourIdx + 24),
+    isDay: data.hourly.is_day.slice(hourIdx, hourIdx + 24),
   };
 
   els['wx-hourly-scroll'].innerHTML = '';
@@ -300,7 +301,7 @@ function renderHourly(data) {
     item.setAttribute('role', 'listitem');
     item.innerHTML = `
       <p class="wx-hour-time">${i === 0 ? 'Now' : formatHourLabel(t)}</p>
-      <p class="wx-hour-icon" aria-hidden="true">${weatherIcon(slice.code[i], true)}</p>
+      <p class="wx-hour-icon" aria-hidden="true">${weatherIcon(slice.code[i], slice.isDay[i] === 1)}</p>
       <p class="wx-hour-temp">${Math.round(slice.temp[i])}°C</p>
       <p class="wx-hour-rain">💧 ${slice.rain[i]}%</p>
     `;
