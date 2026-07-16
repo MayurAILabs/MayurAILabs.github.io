@@ -353,11 +353,20 @@ function renderDaily(data) {
   els['wx-daily-section'].hidden = false;
 }
 
+// Monotonically-increasing token identifying the most recent load request.
+// Because a slower request (e.g. an uncached city) can resolve after a
+// faster one fired afterward (e.g. a cached city), we must ignore any
+// response that isn't from the latest request — otherwise stale data can
+// overwrite the UI after the user has already moved on to a new search.
+let loadToken = 0;
+
 async function loadWeather(lat, lon, locationLabel) {
+  const thisLoadToken = ++loadToken;
   showSkeleton();
   setStatus('');
   try {
     const data = await fetchWeather(lat, lon);
+    if (thisLoadToken !== loadToken) return; // superseded by a newer request
     hideSkeleton();
     hideError();
     renderCurrent(data, locationLabel);
@@ -365,6 +374,7 @@ async function loadWeather(lat, lon, locationLabel) {
     renderRainChart(data);
     renderDaily(data);
   } catch (err) {
+    if (thisLoadToken !== loadToken) return;
     showError('Could not load weather right now. Please check your connection and try again.');
   }
 }
@@ -424,18 +434,25 @@ const handleCityInput = debounce(async (query) => {
   }
 }, 400);
 
+// Guards against an older, slower search submission resolving after a
+// newer one and clobbering its status message or triggering a stale load.
+let searchToken = 0;
+
 async function handleSearchSubmit(e) {
   e.preventDefault();
   const query = els['wx-city-input'].value.trim();
   if (!query) return;
   if (resolvedQuery && resolvedQuery.text === query) {
+    searchToken++;
     els['wx-suggestions'].hidden = true;
     loadWeatherWithRetry(resolvedQuery.lat, resolvedQuery.lon, resolvedQuery.locationLabel, query);
     return;
   }
+  const thisSearchToken = ++searchToken;
   try {
     setStatus('Searching…');
     const results = await searchLocation(query);
+    if (thisSearchToken !== searchToken) return; // superseded by a newer search
     setStatus('');
     if (!results.length) {
       setStatus(INDIAN_PINCODE_RE.test(query)
@@ -448,6 +465,7 @@ async function handleSearchSubmit(e) {
     const label = [top.name, top.country].filter(Boolean).join(', ');
     loadWeatherWithRetry(top.latitude, top.longitude, label, query);
   } catch {
+    if (thisSearchToken !== searchToken) return;
     showError('City search failed. Please check your connection and try again.');
   }
 }
