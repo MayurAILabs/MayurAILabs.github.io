@@ -69,7 +69,7 @@
       <li class="nav-item has-dropdown open">
         <a class="nav-link" href="/utilities/" aria-current="page">Utilities <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></a>
         <div class="nav-dropdown">
-          <div class="dd-empty">More utilities coming soon</div>
+          <a href="/weather.html"><span class="dd-icon">⛅</span>Weather Forecast</a>
           <a class="view-all" href="/utilities/">View All →</a>
         </div>
       </li>
@@ -121,6 +121,7 @@
   <details class="nav-mobile-group" open>
     <summary>Utilities <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg></summary>
     <ul class="nav-mobile-sub">
+      <li><a href="/weather.html">⛅ Weather Forecast</a></li>
       <li><a class="view-all" href="/utilities/">View All →</a></li>
     </ul>
   </details>
@@ -132,17 +133,25 @@
   <section class="page-hero container">
     <span class="eyebrow">Utilities</span>
     <h1>Handy everyday tools</h1>
-    <p>Quick utilities for everyday tasks — this category is just getting started.</p>
+    <p>Quick utilities for everyday tasks.</p>
   </section>
 
   <section class="section container">
-    <div class="empty-state">
-      <div class="es-icon">🛠️</div>
-      <h3>No utilities yet — check back soon</h3>
-      <p>We're actively building this category. In the meantime, explore Finance and Productivity, or ask the AI assistant what's coming next.</p>
-      <div class="hero-actions" style="margin-top:22px;">
-        <a class="btn btn-secondary" href="#assistant">Ask AI</a>
-      </div>
+    <div class="grid">
+      <a class="card" href="/weather.html">
+        <div class="card-icon">⛅</div>
+        <span class="badge">Utilities</span>
+        <h2>Weather Forecast</h2>
+        <p>Live conditions, hourly and 7-day outlook for any city — search by name or PIN code, or use your current location.</p>
+        <ul class="feature-list"><li>Hourly &amp; 7-day forecast</li><li>City or PIN code search</li><li>Powered by Open-Meteo</li></ul>
+        <span class="cta">Open weather forecast</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="empty-state" style="border-top:1px solid var(--border); padding-top:40px;">
+      <p>More utilities are on the way. <a href="#assistant" style="color:var(--emerald-bright); font-weight:600;">Ask AI →</a></p>
     </div>
   </section>
 </main>
