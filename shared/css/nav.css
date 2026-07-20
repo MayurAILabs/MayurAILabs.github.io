@@ -29,22 +29,39 @@
 .nav-logo {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
 }
 
-.nav-logo-mark { width: 30px; height: 30px; display: block; }
+.nav-logo-mark { width: 38px; height: 38px; border-radius: 50%; display: block; }
+
+.nav-logo-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
 .nav-logo-text {
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
 .nav-logo-text .accent { color: var(--emerald-bright); }
+
+.nav-logo-tagline {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--emerald-bright);
+  opacity: 0.85;
+  font-weight: 500;
+}
 
 .nav-links {
   display: flex;
@@ -70,6 +87,12 @@
 .nav-link:hover, .nav-link[aria-current="page"] { color: var(--text-primary); background: var(--navy-800); }
 
 .nav-link .chev { width: 12px; height: 12px; transition: transform 0.2s var(--ease); opacity: 0.7; }
+
+/* Hidden by default at every viewport width; only revealed (as a fixed
+   overlay) below the mobile breakpoint via the .open class. Without this
+   unconditional rule, this panel — and the giant unconstrained chevron
+   icons inside it — renders as a normal in-flow block on desktop. */
+.nav-mobile-panel { display: none; }
 
 .nav-item.has-dropdown { position: relative; }
 .nav-item.has-dropdown.open .nav-link .chev { transform: rotate(180deg); }
@@ -169,7 +192,6 @@
     z-index: 490;
     padding: 12px 20px 32px;
     overflow-y: auto;
-    display: none;
   }
   .nav-mobile-panel.open { display: block; }
 

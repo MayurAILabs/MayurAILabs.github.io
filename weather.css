@@ -44,17 +44,51 @@
   top: 24px;
   left: 24px;
   z-index: 100;
-  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease;
+}
+
+.wx-back-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: block;
+  flex-shrink: 0;
+}
+
+.wx-back-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wx-back-name {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.wx-back-accent { color: #34D399; }
+
+.wx-back-tagline {
+  display: block;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 9px;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #34D399;
+  opacity: 0.85;
+  font-weight: 500;
 }
 
 .wx-back-link:hover,
 .wx-back-link:focus-visible {
-  color: var(--emerald-bright);
+  opacity: 0.85;
 }
 
 .wx-page {
