@@ -1,0 +1,259 @@
+/* ==========================================================================
+   enhance.css (added) — Purely additive visual polish that gives the site a
+   premium, modern "AI platform" feel (OpenAI / Anthropic / Linear / Vercel
+   inspired). Nothing here changes layout structure, brand colors, the logo,
+   navigation, cards' content, links, or any functionality — it only layers
+   backgrounds, glows, hover states, and entrance animations on top of the
+   existing design system.
+
+   Contract preserved: reuses the 9 shared CSS variables by name only.
+   All motion is GPU-friendly (transform/opacity) and fully disabled under
+   prefers-reduced-motion and on touch devices where appropriate.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ANIMATED AI BACKGROUND
+   A static, no-JS mesh sits in body::before; slow floating gradient orbs are
+   injected by enhance.js into .ai-orbs. Both are fixed, behind all content,
+   and never capture pointer events.
+   -------------------------------------------------------------------------- */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 40% at 12% 8%, rgba(16, 185, 129, 0.10), transparent 70%),
+    radial-gradient(34% 38% at 88% 14%, rgba(56, 189, 248, 0.08), transparent 70%),
+    radial-gradient(46% 50% at 50% 108%, rgba(59, 130, 246, 0.08), transparent 70%);
+}
+
+[data-theme="light"] body::before {
+  background:
+    radial-gradient(38% 40% at 12% 8%, rgba(16, 185, 129, 0.08), transparent 70%),
+    radial-gradient(34% 38% at 88% 14%, rgba(56, 189, 248, 0.06), transparent 70%),
+    radial-gradient(46% 50% at 50% 108%, rgba(59, 130, 246, 0.05), transparent 70%);
+}
+
+.ai-orbs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ai-orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.5;
+  will-change: transform;
+}
+.ai-orb.o1 {
+  width: 46vw; height: 46vw; top: -12vw; left: -10vw;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.18), transparent 62%);
+  animation: orb-drift-1 26s var(--ease) infinite alternate;
+}
+.ai-orb.o2 {
+  width: 40vw; height: 40vw; top: -6vw; right: -12vw;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.15), transparent 62%);
+  animation: orb-drift-2 32s var(--ease) infinite alternate;
+}
+.ai-orb.o3 {
+  width: 52vw; height: 52vw; bottom: -22vw; left: 30vw;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.14), transparent 62%);
+  animation: orb-drift-3 38s var(--ease) infinite alternate;
+}
+[data-theme="light"] .ai-orb { opacity: 0.35; }
+
+@keyframes orb-drift-1 { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(6vw, 5vw, 0) scale(1.12); } }
+@keyframes orb-drift-2 { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(-5vw, 7vw, 0) scale(1.1); } }
+@keyframes orb-drift-3 { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(4vw, -6vw, 0) scale(1.14); } }
+
+/* --------------------------------------------------------------------------
+   2. TOP LOADING SHIMMER BAR (Vercel/GitHub-style) — injected by enhance.js,
+   animates once, then removes itself. Non-blocking; never hides content.
+   -------------------------------------------------------------------------- */
+.ai-loadbar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 100%;
+  z-index: 10001;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--emerald), var(--emerald-bright), #38bdf8);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  animation: loadbar 0.9s var(--ease) forwards;
+}
+@keyframes loadbar {
+  0%   { transform: scaleX(0); opacity: 1; }
+  70%  { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   3. HERO — gradient accent text with a soft animated underline + glow.
+   Falls back to a solid color where background-clip:text is unsupported.
+   -------------------------------------------------------------------------- */
+.home-hero h1 .accent {
+  position: relative;
+  /* Bright, green-dominant sheen so the accent keeps the original solid
+     emerald's visual weight (a cooler/lighter gradient read as "smaller"). */
+  background: linear-gradient(100deg, var(--emerald) 0%, var(--emerald-bright) 45%, #6ee7b7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--emerald-bright); /* fallback where background-clip:text is unsupported */
+  font-weight: 800;             /* compensate for the slight thinning of clipped text */
+}
+.home-hero h1 .accent::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, var(--emerald-bright), #38bdf8, transparent);
+  transform: scaleX(0);
+  transform-origin: 50% 50%;
+  animation: underline-in 0.7s var(--ease) 0.35s forwards;
+}
+@keyframes underline-in { to { transform: scaleX(1); } }
+
+.home-hero h1 {
+  text-shadow: 0 2px 40px rgba(16, 185, 129, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   4. BUTTONS — soft sheen sweep + glow on hover (functionality untouched).
+   -------------------------------------------------------------------------- */
+.btn { position: relative; overflow: hidden; }
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 60%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.6s var(--ease);
+  pointer-events: none;
+}
+.btn:hover::after { left: 140%; }
+.btn-primary:hover { box-shadow: 0 12px 30px -8px rgba(16, 185, 129, 0.55), 0 0 0 1px rgba(52, 211, 153, 0.25); transform: translateY(-1px); }
+.btn-secondary:hover { box-shadow: 0 10px 26px -10px rgba(56, 189, 248, 0.35); transform: translateY(-1px); }
+
+/* --------------------------------------------------------------------------
+   5. CARDS — glass depth, gradient-lit border and inner glow on hover, plus
+   a subtly animated, glowing icon tile. Content/links are never touched.
+   -------------------------------------------------------------------------- */
+.card, .category-card {
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+}
+
+/* Inner radial glow that fades in on hover (uses ::after; .card::before is
+   the existing 3px top bar and is left intact). */
+.card::after,
+.category-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.28s var(--ease);
+  background: radial-gradient(60% 55% at 50% 0%, rgba(16, 185, 129, 0.12), transparent 70%);
+}
+.card { overflow: hidden; } /* already set on .card; harmless re-assert */
+.category-card { overflow: hidden; }
+.card:hover::after,
+.category-card:hover::after { opacity: 1; }
+
+.card:hover, .category-card:hover {
+  box-shadow: 0 22px 48px -22px rgba(16, 185, 129, 0.4), 0 0 0 1px rgba(52, 211, 153, 0.22);
+}
+
+/* Icon tiles — gradient wash + soft glow, gentle lift on card hover */
+.card-icon, .category-card .cc-icon {
+  background: linear-gradient(135deg, var(--navy-700), var(--navy-800));
+  box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.12), 0 6px 16px -8px rgba(16, 185, 129, 0.35);
+  transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease);
+}
+.card:hover .card-icon,
+.category-card:hover .cc-icon {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.28), 0 10px 22px -8px rgba(16, 185, 129, 0.5);
+}
+
+.recent-card:hover { box-shadow: 0 14px 30px -16px rgba(16, 185, 129, 0.35); }
+.why-item .wi-icon { transition: transform 0.28s var(--ease); display: inline-block; }
+.why-item:hover .wi-icon { transform: translateY(-3px) scale(1.08); }
+
+/* --------------------------------------------------------------------------
+   6. SECTION DIVIDERS — hairline gradient separators, no layout shift.
+   -------------------------------------------------------------------------- */
+main .section + .section { position: relative; }
+main .section + .section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: min(1120px, calc(100% - 48px));
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.25), transparent);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. SCROLL REVEAL — opt-in only when enhance.js has flagged the document
+   (html.js-enhance). Without JS, or with reduced motion, content is fully
+   visible immediately (no hidden state applied).
+   -------------------------------------------------------------------------- */
+html.js-enhance .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  will-change: opacity, transform;
+}
+html.js-enhance .reveal.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   8. CURSOR GLOW — a soft light that trails the pointer (desktop only).
+   Injected + positioned by enhance.js; hidden on touch / reduced motion.
+   -------------------------------------------------------------------------- */
+.ai-cursor-glow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 460px; height: 460px;
+  margin: -230px 0 0 -230px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.10), transparent 60%);
+  transition: opacity 0.3s var(--ease);
+  will-change: transform;
+}
+.ai-cursor-glow.on { opacity: 1; }
+
+/* --------------------------------------------------------------------------
+   9. RESPONSIVE & MOTION SAFETY
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .ai-orb { opacity: 0.35; }
+  .ai-orb.o3 { display: none; }        /* lighten paint load on mobile */
+  .card, .category-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+@media (hover: none) {
+  .ai-cursor-glow { display: none; }   /* no pointer to follow */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-orb { animation: none; }
+  .ai-loadbar { display: none; }
+  .home-hero h1 .accent::after { animation: none; transform: scaleX(1); }
+  .ai-cursor-glow { display: none; }
+  html.js-enhance .reveal { opacity: 1; transform: none; transition: none; }
+}
