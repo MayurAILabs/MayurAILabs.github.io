@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="/shared/css/command-palette.css">
 <link rel="stylesheet" href="/shared/css/components.css">
 <link rel="stylesheet" href="/shared/css/enhance.css">
+<link rel="stylesheet" href="/shared/css/important-dates.css">
 <link rel="stylesheet" href="/assistant/styles/assistant.css">
 <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css"
@@ -153,6 +154,22 @@
     <div class="hero-actions fade-up">
       <a class="btn btn-primary" href="#popular">Explore Tools</a>
       <a class="btn btn-secondary" href="#assistant">Ask AI</a>
+    </div>
+  </section>
+
+  <!-- IMPORTANT DATES sticky note (feature: see shared/js/important-dates*.js).
+       On wide screens important-dates.css floats this into the empty space to
+       the left of the hero; below that it stays in normal flow. -->
+  <section class="section container" id="important-dates" aria-labelledby="important-dates-title">
+    <div class="idates-wrap">
+      <aside class="idates-note">
+        <span class="idates-pin" aria-hidden="true">📌</span>
+        <h2 class="idates-title" id="important-dates-title">Important Dates</h2>
+        <ul class="idates-list" id="important-dates-list">
+          <li class="idates-msg">Loading upcoming dates…</li>
+        </ul>
+        <p class="idates-foot" id="important-dates-foot">Auto-updated daily</p>
+      </aside>
     </div>
   </section>
 
@@ -362,6 +379,8 @@
 <script src="/shared/js/nav.js"></script>
 <script src="/shared/js/command-palette.js"></script>
 <script src="/shared/js/enhance.js"></script>
+<script src="/shared/js/important-dates-data.js" defer></script>
+<script src="/shared/js/important-dates.js" defer></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/16.3.0/lib/marked.umd.min.js"
   integrity="sha384-28tGVU6cfNCYHN01DPkRbQ5zNcqr7cHx7RE2PA0Os8oQsE0H1dRIJBoGPX75oXDs"

@@ -1,0 +1,206 @@
+/* ==========================================================================
+   important-dates.css (added) — "Important Dates" sticky-note widget.
+   Self-contained: every selector is namespaced .idates-* so it cannot collide
+   with existing components, the nav, the command palette or the AI assistant.
+   Only READS the shared design tokens; never redefines them.
+   ========================================================================== */
+
+.idates-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---- The note itself: glassmorphic, softly tilted, pinned ---- */
+.idates-note {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  padding: 30px 24px 20px;
+  border-radius: var(--radius-lg);
+  /* Glassmorphism over the animated AI background */
+  background: linear-gradient(160deg, rgba(99, 102, 241, 0.10), rgba(56, 189, 248, 0.06)), var(--navy-900);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  transform: rotate(-1.2deg);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+/* Light glowing border */
+.idates-note::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, rgba(129, 140, 248, 0.45), rgba(34, 211, 238, 0.30), transparent 65%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.8;
+  transition: opacity 0.3s var(--ease);
+}
+
+.idates-note:hover {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: 0 26px 54px -24px rgba(99, 102, 241, 0.55);
+  border-color: rgba(129, 140, 248, 0.35);
+}
+.idates-note:hover::before { opacity: 1; }
+
+/* ---- Pin ---- */
+.idates-pin {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+}
+
+/* ---- Header ---- */
+.idates-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+/* ---- List ---- */
+.idates-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+}
+
+.idates-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--idates-accent, var(--text-muted));
+  transition: background-color 0.2s var(--ease), transform 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.idates-item:hover,
+.idates-item:focus-visible {
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateX(3px);
+}
+
+/* Category colour coding */
+.idates-item.cat-festival      { --idates-accent: #fb923c; } /* orange */
+.idates-item.cat-government    { --idates-accent: #f87171; } /* red    */
+.idates-item.cat-national      { --idates-accent: #34d399; } /* green  */
+.idates-item.cat-international { --idates-accent: #60a5fa; } /* blue   */
+
+/* Subtle glow for anything happening within 7 days */
+.idates-item.is-soon {
+  background: color-mix(in srgb, var(--idates-accent) 12%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--idates-accent) 30%, transparent),
+              0 6px 20px -10px var(--idates-accent);
+}
+
+.idates-icon { font-size: 19px; line-height: 1; flex-shrink: 0; }
+
+.idates-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.idates-name {
+  font-size: 13.5px; font-weight: 600; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.idates-date { font-size: 11.5px; color: var(--text-muted); }
+
+/* Days-remaining pill */
+.idates-days {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 52px; padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  line-height: 1.1;
+}
+.idates-days b { font-size: 14px; font-weight: 700; color: var(--idates-accent, var(--text-primary)); }
+.idates-days small { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); }
+
+.idates-foot {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Loading / empty states */
+.idates-msg { text-align: center; font-size: 13px; color: var(--text-muted); padding: 14px 4px; }
+
+/* ---- Light theme ---- */
+[data-theme="light"] .idates-note {
+  background: linear-gradient(160deg, rgba(99, 102, 241, 0.07), rgba(56, 189, 248, 0.05)), var(--navy-900);
+}
+[data-theme="light"] .idates-item { background: rgba(15, 23, 42, 0.03); }
+[data-theme="light"] .idates-item:hover,
+[data-theme="light"] .idates-item:focus-visible { background: rgba(15, 23, 42, 0.06); }
+[data-theme="light"] .idates-days { background: rgba(15, 23, 42, 0.04); }
+
+/* ---- Wide screens: pin the note into the empty space left of the hero ----
+   Only enabled once the viewport is wide enough that the note sits clear of
+   the centred content column. Below this it stays in normal document flow,
+   so it can never overlap the hero text or the section headings. */
+@media (min-width: 1500px) {
+  main { position: relative; }          /* containing block for the note */
+
+  #important-dates {
+    position: absolute;
+    top: 20px;
+    /* Centre the note in the blank strip between the viewport edge and the
+       start of the hero headline, so both gaps are equal at any wide width.
+       The hero text is centred in `main`, so its left edge sits at
+       (50% - halfTextWidth). Centring a 329px-wide note (320px + the ~9px the
+       -1.2deg tilt adds) in that strip works out to (25% - 308px); +4.5px
+       converts the visual edge back to the untilted box's `left`.
+       Percentages resolve against `main`, which — unlike vw — excludes the
+       scrollbar, so this stays exact. Constant assumes the 56px capped
+       headline; revisit if the hero wording or type scale changes. */
+    left: calc(25% - 303px);
+    width: 320px;
+    padding: 0;
+    margin: 0;
+    z-index: 5;                          /* above background, below nav (500) */
+  }
+  #important-dates .idates-note { max-width: 100%; }
+
+  /* Slightly more compact in this layout only, so the note's bottom edge
+     lines up with the end of the hero block instead of hanging past it.
+     The in-flow layout used on narrower screens keeps its original spacing. */
+  #important-dates .idates-note  { padding: 26px 20px 14px; }
+  #important-dates .idates-title { margin-bottom: 12px; }
+  #important-dates .idates-list  { gap: 7px; }
+  #important-dates .idates-item  { padding: 8px 11px; }
+  #important-dates .idates-foot  { margin-top: 11px; }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 560px) {
+  .idates-note { max-width: 100%; padding: 28px 16px 18px; transform: none; }
+  .idates-note:hover { transform: translateY(-3px); }
+  .idates-name { font-size: 13px; }
+  .idates-days { min-width: 46px; }
+}
+
+/* ---- Motion safety ---- */
+@media (prefers-reduced-motion: reduce) {
+  .idates-note { transform: none; transition: none; }
+  .idates-note:hover { transform: none; }
+  .idates-item:hover, .idates-item:focus-visible { transform: none; }
+}
