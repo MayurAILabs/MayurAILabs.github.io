@@ -1,5 +1,5 @@
 import { getProvider } from "../providers/index.js";
-import { systemPrompt } from "../prompts/systemPrompt.js";
+import { buildSystemPrompt } from "../prompts/systemPrompt.js";
 
 function buildMessages(history, message, historyLimit) {
   const trimmed = history.slice(-historyLimit * 2);
@@ -19,7 +19,7 @@ export function streamChatResponse({ env, config, message, history }) {
         const upstream = await provider.stream({
           apiKey: env.GEMINI_API_KEY,
           model: config.model,
-          systemPrompt,
+          systemPrompt: buildSystemPrompt(),
           messages,
           temperature: config.temperature,
           maxOutputTokens: config.maxOutputTokens,
@@ -49,7 +49,7 @@ export async function getChatAnswer({ env, config, message, history }) {
   const answer = await provider.generate({
     apiKey: env.GEMINI_API_KEY,
     model: config.model,
-    systemPrompt,
+    systemPrompt: buildSystemPrompt(),
     messages,
     temperature: config.temperature,
     maxOutputTokens: config.maxOutputTokens,
