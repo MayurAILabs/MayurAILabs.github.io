@@ -4,6 +4,10 @@
    Behaviour:
      • Resolves recurring ("MM-DD") events to their next occurrence.
      • Drops anything already past, sorts nearest-first, shows days remaining.
+     • Only shows events within the next WINDOW_DAYS (6 weeks) — a recurring
+       event whose next occurrence is further out than that (e.g. an annual
+       deadline the day after it passes) simply isn't shown until it comes
+       back within the window, rather than jumping straight to next year.
      • Flags events within 7 days so the CSS can glow them.
      • Renders entirely from the local curated list (see
        important-dates-data.js) — no network requests.
@@ -23,7 +27,7 @@
 (function () {
   "use strict";
 
-  var MAX_ITEMS = 5;
+  var WINDOW_DAYS = 42;   // 6 weeks — events resolving further out than this aren't shown
   var SOON_DAYS = 7;
 
   var mount = document.getElementById("important-dates-list");
@@ -95,12 +99,14 @@
     source.forEach(function (ev) {
       var when = resolveDate(ev, today);
       if (!when) return;
+      var days = daysBetween(today, when);
+      if (days > WINDOW_DAYS) return;   // outside the 6-week window — don't show yet
       out.push({
         title: ev.title,
         icon: ev.icon || "📅",
         category: ev.category || "national",
         when: when,
-        days: daysBetween(today, when)
+        days: days
       });
     });
 
@@ -131,7 +137,7 @@
   }
 
   function render(events) {
-    var list = events.slice(0, MAX_ITEMS);
+    var list = events;   // already filtered to the 6-week window by buildList()
 
     if (!list.length) {
       mount.innerHTML = '<li class="idates-msg">No upcoming dates right now.</li>';
