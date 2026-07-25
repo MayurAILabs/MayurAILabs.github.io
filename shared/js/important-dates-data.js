@@ -11,13 +11,28 @@
      icon      — emoji shown next to the title
      recurring — true  => auto-rolls to the next year once this year's passes
                  false => disappears for good after it passes
+     overrides — OPTIONAL, only on recurring:true events. { year: "YYYY-MM-DD" }
+                 — a one-off correction for a SPECIFIC year only, e.g. when a
+                 government deadline gets extended. Every other year keeps
+                 using the normal recurring `date`. Once an overridden date
+                 passes it's removed exactly like any other event, and the
+                 next year automatically reverts to the base date unless it
+                 also has its own override entry.
+                 Example: ITR was pushed to 15 Sep in 2027 →
+                   overrides: { 2027: "2027-09-15" }
 
    ⚠️ MAINTENANCE NOTE: Lunar/Hindu- and Islamic-calendar festivals (Diwali,
    Holi, Eid, Ganesh Chaturthi, etc.) shift every year, so they are listed as
    recurring:false with explicit dates and MUST be refreshed annually. The
    dates below are best-effort and should be verified against an official
    panchang/calendar before each year. Fixed-date events (Republic Day, ITR
-   deadline, etc.) are recurring:true and need no upkeep.
+   deadline, etc.) are recurring:true and need no upkeep — UNLESS a deadline
+   gets extended in a given year, in which case add an `overrides` entry for
+   that event rather than editing its base `date` (see above; editing the
+   base date would wrongly shift it for every future year too). There is no
+   automated way to detect such extensions — the government announces them
+   via notification/press release, not a structured feed — so this has to be
+   updated by hand when you learn of one.
    ========================================================================== */
 
 window.IMPORTANT_DATES = [

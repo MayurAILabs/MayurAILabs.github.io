@@ -39,6 +39,18 @@
 
   function parseLocal(y, m, d) { return new Date(y, m - 1, d); }
 
+  /** Resolve a recurring event's date for one specific year, honouring a
+      per-year override if one is set (e.g. a government deadline that got
+      extended that year only). Falls back to the base "MM-DD" otherwise. */
+  function recurringDateForYear(ev, year, monthDay) {
+    var override = ev.overrides && ev.overrides[year];
+    if (override) {
+      var p = String(override).split("-").map(Number);
+      if (p.length === 3 && !p.some(isNaN)) return parseLocal(p[0], p[1], p[2]);
+    }
+    return parseLocal(year, monthDay[0], monthDay[1]);
+  }
+
   /** Resolve an event to its next upcoming Date (or null if gone for good). */
   function resolveDate(ev, today) {
     if (!ev || !ev.date) return null;
@@ -46,8 +58,8 @@
 
     if (ev.recurring) {
       if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) return null;
-      var thisYear = parseLocal(today.getFullYear(), parts[0], parts[1]);
-      return thisYear >= today ? thisYear : parseLocal(today.getFullYear() + 1, parts[0], parts[1]);
+      var thisYear = recurringDateForYear(ev, today.getFullYear(), parts);
+      return thisYear >= today ? thisYear : recurringDateForYear(ev, today.getFullYear() + 1, parts);
     }
     if (parts.length !== 3 || parts.some(isNaN)) return null;
     var fixed = parseLocal(parts[0], parts[1], parts[2]);
