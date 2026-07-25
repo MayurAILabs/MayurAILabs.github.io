@@ -8,6 +8,10 @@
        event whose next occurrence is further out than that (e.g. an annual
        deadline the day after it passes) simply isn't shown until it comes
        back within the window, rather than jumping straight to next year.
+     • Never shows more than MAX_ITEMS, even if more than that fall within
+       the window — keeps the note's height within what it was designed for.
+       Since the list is already nearest-first, this drops the *farthest*
+       (least urgent) events first, never the soonest ones.
      • Flags events within 7 days so the CSS can glow them.
      • Renders entirely from the local curated list (see
        important-dates-data.js) — no network requests.
@@ -28,6 +32,7 @@
   "use strict";
 
   var WINDOW_DAYS = 42;   // 6 weeks — events resolving further out than this aren't shown
+  var MAX_ITEMS = 5;      // height budget the note was calibrated for; trims the farthest events
   var SOON_DAYS = 7;
 
   var mount = document.getElementById("important-dates-list");
@@ -137,7 +142,10 @@
   }
 
   function render(events) {
-    var list = events;   // already filtered to the 6-week window by buildList()
+    // Already filtered to the 6-week window and sorted nearest-first by
+    // buildList(); slicing here just caps the height, dropping the
+    // farthest-out events first if more than MAX_ITEMS qualify.
+    var list = events.slice(0, MAX_ITEMS);
 
     if (!list.length) {
       mount.innerHTML = '<li class="idates-msg">No upcoming dates right now.</li>';
