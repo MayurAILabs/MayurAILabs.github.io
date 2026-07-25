@@ -5,9 +5,17 @@
      • Resolves recurring ("MM-DD") events to their next occurrence.
      • Drops anything already past, sorts nearest-first, shows days remaining.
      • Flags events within 7 days so the CSS can glow them.
-     • Renders the local list immediately (zero network cost), then tries to
-       enrich it with official Indian public holidays from a free, key-less
-       API at idle time. If that fails for ANY reason the note keeps working.
+     • Renders entirely from the local curated list (see
+       important-dates-data.js) — no network requests.
+
+   NOTE: an earlier version also tried to enrich this list with public
+   holidays from a free API (date.nager.at) at idle time. That API does not
+   have any data for India (confirmed: every PublicHolidays request for
+   India, for any year, returns 204 No Content, and India isn't in its
+   AvailableCountries list either), so the enrichment could never succeed
+   and was removed. If a genuine free, key-less, CORS-enabled India holiday
+   API turns up in the future, it can be reintroduced the same way this one
+   was (render local list immediately, enrich at idle, fail silently).
 
    Self-contained and defensive: a failure here can never affect the rest of
    the page. Data lives in important-dates-data.js.
@@ -17,9 +25,6 @@
 
   var MAX_ITEMS = 5;
   var SOON_DAYS = 7;
-  var API_TTL_MS = 24 * 60 * 60 * 1000;    // cache public holidays for a day
-  var API_TIMEOUT_MS = 3500;
-  var CACHE_KEY = "mayurailabs-holidays";
 
   var mount = document.getElementById("important-dates-list");
   if (!mount) return;                       // widget not on this page
@@ -70,9 +75,9 @@
   }
 
   /* ---------------- build the upcoming list ---------------- */
-  function buildList(extraEvents) {
+  function buildList() {
     var today = startOfToday();
-    var source = (window.IMPORTANT_DATES || []).concat(extraEvents || []);
+    var source = window.IMPORTANT_DATES || [];
     var out = [];
 
     source.forEach(function (ev) {
@@ -89,7 +94,8 @@
 
     out.sort(function (a, b) { return a.when - b.when; });
 
-    // De-duplicate same title landing on the same day (local + API overlap).
+    // De-duplicate same title landing on the same day (defends against
+    // accidental duplicate entries in important-dates-data.js).
     var seen = Object.create(null);
     return out.filter(function (e) {
       var k = isoKey(e.when) + "|" + e.title.toLowerCase();
@@ -138,69 +144,7 @@
     }).join("");
   }
 
-  /* ---------------- optional: official public holidays ---------------- */
-  function readCache() {
-    try {
-      var raw = localStorage.getItem(CACHE_KEY);
-      if (!raw) return null;
-      var obj = JSON.parse(raw);
-      if (!obj || (Date.now() - obj.t) > API_TTL_MS) return null;
-      return obj.v;
-    } catch (e) { return null; }
-  }
-
-  function writeCache(v) {
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), v: v })); } catch (e) {}
-  }
-
-  function fetchYear(year) {
-    var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
-    var timer = ctl && setTimeout(function () { ctl.abort(); }, API_TIMEOUT_MS);
-    return fetch("https://date.nager.at/api/v3/PublicHolidays/" + year + "/IN",
-                 ctl ? { signal: ctl.signal } : undefined)
-      .then(function (r) {
-        if (timer) clearTimeout(timer);
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        return r.json();
-      })
-      .then(function (rows) {
-        return (rows || []).map(function (h) {
-          return { title: h.localName || h.name, date: h.date, category: "national", icon: "🎊", recurring: false };
-        });
-      });
-  }
-
-  function enrichWithHolidays(baseRender) {
-    var cached = readCache();
-    if (cached) { baseRender(cached); return; }
-
-    var y = new Date().getFullYear();
-    Promise.all([fetchYear(y), fetchYear(y + 1)])
-      .then(function (res) {
-        var merged = res[0].concat(res[1]);
-        if (merged.length) { writeCache(merged); baseRender(merged); }
-      })
-      .catch(function () {
-        /* Offline, blocked, rate-limited, CORS — silently keep the local list. */
-      });
-  }
-
   /* ---------------- boot ---------------- */
-  function paint(extra) {
-    var events = buildList(extra);
-    render(events);
-    if (footEl) {
-      footEl.textContent = extra && extra.length
-        ? "Auto-updated · includes official public holidays"
-        : "Auto-updated daily";
-    }
-  }
-
-  paint(null);   // instant, local-only — no network on the critical path
-
-  // Enrich later, when the browser is idle, so page load is untouched.
-  var idle = window.requestIdleCallback || function (fn) { return setTimeout(fn, 1200); };
-  idle(function () {
-    try { enrichWithHolidays(paint); } catch (e) {}
-  });
+  render(buildList());
+  if (footEl) footEl.textContent = "Auto-updated daily";
 })();
