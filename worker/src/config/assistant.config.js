@@ -6,6 +6,12 @@ export const assistantConfig = {
   temperature: 0.7,
   maxOutputTokens: 2048,
 
+  // Grounds answers in live Google Search results (current events, recent
+  // dates, anything past the model's training cutoff) instead of relying
+  // solely on training data. Native Gemini capability, not the custom
+  // website-content RAG reserved under ragEnabled below.
+  webSearchEnabled: true,
+
   // How many prior turns (user+assistant pairs) to forward as context.
   historyLimit: 10,
 

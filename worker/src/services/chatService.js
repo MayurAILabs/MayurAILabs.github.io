@@ -23,6 +23,7 @@ export function streamChatResponse({ env, config, message, history }) {
           messages,
           temperature: config.temperature,
           maxOutputTokens: config.maxOutputTokens,
+          webSearchEnabled: config.webSearchEnabled,
         });
         const reader = upstream.getReader();
         for (;;) {
@@ -53,6 +54,7 @@ export async function getChatAnswer({ env, config, message, history }) {
     messages,
     temperature: config.temperature,
     maxOutputTokens: config.maxOutputTokens,
+    webSearchEnabled: config.webSearchEnabled,
   });
   return answer;
 }

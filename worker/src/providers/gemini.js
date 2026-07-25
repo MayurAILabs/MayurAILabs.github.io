@@ -14,7 +14,7 @@ function toGeminiContents(messages) {
   }));
 }
 
-function buildRequestBody({ systemPrompt, messages, temperature, maxOutputTokens }) {
+function buildRequestBody({ systemPrompt, messages, temperature, maxOutputTokens, webSearchEnabled }) {
   return {
     contents: toGeminiContents(messages),
     systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -22,6 +22,9 @@ function buildRequestBody({ systemPrompt, messages, temperature, maxOutputTokens
       temperature,
       maxOutputTokens,
     },
+    // Grounds answers in live Google Search results for date-sensitive or
+    // current-events questions, instead of relying solely on training data.
+    ...(webSearchEnabled ? { tools: [{ google_search: {} }] } : {}),
   };
 }
 
@@ -63,12 +66,12 @@ function normalizeSseStream(upstreamBody) {
   });
 }
 
-export async function stream({ apiKey, model, systemPrompt, messages, temperature, maxOutputTokens }) {
+export async function stream({ apiKey, model, systemPrompt, messages, temperature, maxOutputTokens, webSearchEnabled }) {
   const url = `${API_ROOT}/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(buildRequestBody({ systemPrompt, messages, temperature, maxOutputTokens })),
+    body: JSON.stringify(buildRequestBody({ systemPrompt, messages, temperature, maxOutputTokens, webSearchEnabled })),
   });
 
   if (!response.ok || !response.body) {
@@ -79,12 +82,12 @@ export async function stream({ apiKey, model, systemPrompt, messages, temperatur
   return normalizeSseStream(response.body);
 }
 
-export async function generate({ apiKey, model, systemPrompt, messages, temperature, maxOutputTokens }) {
+export async function generate({ apiKey, model, systemPrompt, messages, temperature, maxOutputTokens, webSearchEnabled }) {
   const url = `${API_ROOT}/${model}:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(buildRequestBody({ systemPrompt, messages, temperature, maxOutputTokens })),
+    body: JSON.stringify(buildRequestBody({ systemPrompt, messages, temperature, maxOutputTokens, webSearchEnabled })),
   });
 
   if (!response.ok) {
